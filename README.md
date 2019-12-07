@@ -9,11 +9,17 @@ You can directly import this to overleaf:
 
 Then, if you have adapted your code, and changed some pictures, or made a table, upload your change back again to your github folder.
 (It also automatically s the code in your report appendices, so no more copy pasting :))
+0.
 ![1](./InstructionPictures/0.png)
+1.
 ![1](./InstructionPictures/1.png)
-![1](./InstructionPictures/2.png)
+2.
+![1](./InstructionPictures/b2.png)
+3.
 ![1](./InstructionPictures/3.png)
+4. 
 ![1](./InstructionPictures/4.png)
+5.
 ![1](./InstructionPictures/5.png)
 
 Then you update your entire report, so tables, (vector) figures, and code with a single click in overleaf:
