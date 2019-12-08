@@ -3,6 +3,9 @@ clear all
 close all
 clc
 
+%% example problem: generating a halo orbit
+% you can replace this part with your own code.
+
 % declare and initialise parameters
 mp = 1000;
 mq = 1;
@@ -24,13 +27,7 @@ alpha_init = [-1001; 0; 0;0];
 % call differential equations with ODE45
 [t,alpha] = ode45(@(t,alpha) odefcn18_3(t,alpha,alpha_p,alpha_q,mu_p,mu_q,d_p,d_q,n), t_span, alpha_init);
 
-%% plot to latex example
-dataseries_1 = alpha(:,1);
-dataseries_2 = alpha(:,3);
-
-
-%% it configures and creates the plot
-% Put this below your code (above your functions though)
+%% This is where you configures and create the plot (keep this)
 % declare dataseries (in this case 3, can be more)
 x_series = java.util.ArrayList(); %omg can has java in matlab
 y_series = java.util.ArrayList();
@@ -70,13 +67,13 @@ axisScales.add(y_axis_scale);
 axisScales.add(z_axis_scale); % can also do this in loop
 
 % create x-series (can be as much as you like)
-x_series1 = dataseries_1;
+x_series1 = alpha(:,1);
 x_series2 = [2,3,100];
 x_series.add(x_series1);
 x_series.add(x_series2);
 
 % create y-series (can be as much as you like)
-y_series1 = dataseries_2;
+y_series1 = alpha(:,3);
 y_series2 = [6,7,6];
 y_series3 = [6,7,700];
 y_series.add(y_series1);
@@ -109,10 +106,10 @@ plot_altitudes(obj_mult,plotData);
 
 %% Create a quick 2nd figure:
 x_series.clear(); % java
-x_series.add(dataseries_1) % java
+x_series.add(alpha(:,1)) % java
 y_series.clear(); % java
-y_series.add(dataseries_2) % java
-filename = "different_picture"
+y_series.add(alpha(:,3)) % java
+filename = "different_picture";
 exportType = 'jpeg'; % can be eps or jpeg
 setCustomScales = false; % set to false to disable custom axis scales
 
@@ -123,7 +120,7 @@ plotDataTwo = PlotData(fileName,relativePath,exportType,...
     
 plot_altitudes(obj_mult,plotDataTwo);
 
-%% ODE equations
+%% ODE equations to compute orbit, you can remove this, it's for an example
 function dalphadt = odefcn18_3(t,alpha,alpha_p,alpha_q, mu_p,mu_q,d_p,d_q,n)
     % declare and initialise parameters
     dalphadt = zeros(4,1);

@@ -109,7 +109,7 @@ function exportFigureToLatex(figureObject,plotData)
     %+2 to account for begin and end slash
     parentFolder =currentFolder(1:(length(currentFolder)-strlength(subtractPath)+2));
     targetFolder = parentFolder+plotData.getLatexDestination;
-    destinationFile = targetFolder+plotData.getFileName()
+    destinationFile = targetFolder+plotData.getFileName();
 
     % export the image to latex
     if (plotData.getExportType() == "jpeg")
