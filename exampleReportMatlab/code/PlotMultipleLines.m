@@ -75,9 +75,10 @@ function createFigure(plotData)
     % set the rotation of the y-label to 0 degrees
 %     set(ylh, 'Rotation',0, 'VerticalAlignment','top', 'HorizontalAlignment','right');
     rotation = plotData.getAxisLabelRotation();
-    set(ylh, 'Rotation',rotation(2), 'VerticalAlignment','top', 'HorizontalAlignment','right');
+    set(ylh, 'Rotation',rotation(2));
     % if you want to also shift the positionof the y-axis label:
 %     set(ylh, 'Rotation',0, 'Position',[0.38 -0.03], 'VerticalAlignment','top', 'HorizontalAlignment','right');
+%     set(ylh, 'Rotation',rotation(2), 'VerticalAlignment','top', 'HorizontalAlignment','right');
  
 %     Add arrows with text. the coordinates are fractions of the axis lengths
 %     annotation('textarrow', [0.33 0.275], [0.6 0.662],'String' , 'T=const'); 

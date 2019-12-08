@@ -47,6 +47,9 @@ relativePath = '../latex/Images/'; % the ../ goes up one folder
 exportType = 'eps'; % can be eps or jpeg
 lineColours = 'blue';
 nrOfDimensions = 2;
+
+% set axis labels
+axisLabelRotation =- ones(3,1)*90; % 0 for no rotation (currently only rotates y-axis)
 y_axis_label = '$\displaystyle\frac{X{g_0}}{C_{eff}^2}$';
 axisLabels = ["example x axis label", y_axis_label];
 
@@ -86,7 +89,6 @@ dataSeries.add(x_series);
 dataSeries.add(y_series);
 
 % create legends for dataseries
-axisLabelRotation =- ones(3,1)*90; % 0 for no rotation
 y_series1_label = "halo orbit path of 3rd body";
 y_series2_label = '$\displaystyle\frac{X{g_0}}{C_{eff}^2}$';
 y_series3_label = "third line";
