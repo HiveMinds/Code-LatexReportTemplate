@@ -117,8 +117,8 @@ classdef PlotData
             setCustomScales = obj.setCustomScales;
         end
         
-        function axisLabelRotation = getAxisLabelRotation(obj)
-            axisLabelRotation = obj.axisLabelRotation;
+        function setAxisLabelRotation = getAxisLabelRotation(obj)
+            setAxisLabelRotation = obj.setAxisLabelRotation;
         end
     end
 end

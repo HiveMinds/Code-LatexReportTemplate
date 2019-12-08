@@ -86,6 +86,7 @@ dataSeries.add(x_series);
 dataSeries.add(y_series);
 
 % create legends for dataseries
+axisLabelRotation =- ones(3,1)*90; % 0 for no rotation
 y_series1_label = "halo orbit path of 3rd body";
 y_series2_label = '$\displaystyle\frac{X{g_0}}{C_{eff}^2}$';
 y_series3_label = "third line";
@@ -98,7 +99,8 @@ plotType = "lines"; % scatter doesnt work yet
 plotData = PlotData(fileName,relativePath,exportType,...
         dataSeries,lineColours, nrOfDimensions,axisLabels,legend,...
         legendLocation, plotType,axisScales,currentFolder,...
-        latexDestination,setAxisDomain,axis_domains, setCustomScales);
+        latexDestination,setAxisDomain,axis_domains, setCustomScales,...
+        axisLabelRotation);
 
 % plot the dataseries automatically to latex
 obj_mult = PlotMultipleLines;
@@ -116,7 +118,8 @@ setCustomScales = false; % set to false to disable custom axis scales
 plotDataTwo = PlotData(fileName,relativePath,exportType,...
         dataSeries,lineColours, nrOfDimensions,axisLabels,legend,...
         legendLocation, plotType,axisScales,currentFolder,...
-        latexDestination,setAxisDomain,axis_domains, setCustomScales);
+        latexDestination,setAxisDomain,axis_domains, setCustomScales,...
+        axisLabelRotation);
     
 plot_altitudes(obj_mult,plotDataTwo);
 
