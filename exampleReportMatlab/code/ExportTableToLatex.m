@@ -8,7 +8,7 @@ filename = "table_1.csv"
 latexDestination = "../latex/tables/";
 createFatHeaders =true; 
 
-% create your own table
+%% creating matrix for table, substitute your own code in here
 Header = ["item", "amount", "id"];
 fries = [10,2,3.];
 Potatoes = [1.4 5 "hangryy"];
@@ -16,6 +16,7 @@ ultramarijn = ["deep purple" "ultraviolent" "yellowish"];
 swag = ["swag" "swagga" "swaggalini"];
 table =[Header;fries;Potatoes;ultramarijn;swag];
 
+% call function to create latex table
 putTableInLatex(table,filename,latexDestination,createFatHeaders)
 
 %% create and export the table to latex
