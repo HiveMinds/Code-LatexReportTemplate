@@ -28,9 +28,9 @@ You don't have to do unnecessary work copy pasting pictures and creating report-
 
 ![1](./InstructionPictures/3.clone.png)
 
-4. if you want to work in overleaf: 
+4. if you want to work in overleaf (for convenience): 
 
-4.a Get a(n) (free) overleaf account.
+4.a Get a(n) (free) overleaf account at https://www.overleaf.com.
 
 4.b In: https://www.overleaf.com/project click: "New project>import from github" and select your (copy/fork of this) repository.
 
