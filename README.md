@@ -13,21 +13,17 @@ The basic idea is, you work on code in some folder `a` and on your report in som
 1. Download git from https://desktop.github.com/
 2. Fork this repository:
 
-2.a 
 
-![1](./InstructionPictures/0.fork.png)
+![1](./InstructionPictures/a.png)
 
-2.b 
 
-![1](./InstructionPictures/1.fork.png)
+3.  (If you want you can skip to step 4) Or you can Clone=download your fork of this repository:
 
-2. Clone=download your fork of this repository:
-
-2.a 
+3.a Go to your own fork of this repository (in the browser:`https://github.com/<your github username>/Code-LatexReportTemplate`) and click on the green button clone:
 
 ![1](./InstructionPictures/2.clone.png)
 
-2.b 
+3.b open command prompt, browse to the folder where you want it with: `cd c:`,`cd "c:/some folder/"` and type `git clone <the link you copied>`.
 
 ![1](./InstructionPictures/3.clone.png)
 
@@ -37,37 +33,32 @@ The basic idea is, you work on code in some folder `a` and on your report in som
 
 4.b In: https://www.overleaf.com/project click: "New project>import from github" and select your (copy/fork of this) repository.
 
-
-![1](./InstructionPictures/a.png)
+![1](./InstructionPictures/b.png)
 
 4.c
 
-![1](./InstructionPictures/b.png)
-
-4.d
-
 ![1](./InstructionPictures/c.png)
 
-4.e Then, if you have adapted your code, and changed some pictures, or made a table, upload your change back again to your github folder.
+4.d Then, if you have adapted your code, and changed some pictures, or made a table, upload your change back again to your github folder.
 (It also automatically s the code in your report appendices, so no more copy pasting :))
 
-4.f
+4.e
 
 ![1](./InstructionPictures/0.png)
 
-4.g
+4.f
 
 ![1](./InstructionPictures/1.png)
 
-4.h
+4.g
 
 ![1](./InstructionPictures/3.png)
 
-4.i
+4.h
 
 ![1](./InstructionPictures/4.png)
 
-4.j
+4.i
 
 ![1](./InstructionPictures/5.png)
 
