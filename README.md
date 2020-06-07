@@ -6,6 +6,9 @@ This is a latex sample report which is syncred with git(hub). It (semi-)automati
 You don't have to do unnecessary work copy pasting pictures and creating report-layouts because it's semi-automated. (Semi- means in this case that you have to click "upload it to 'the  github cloud'", which at github is called push, and pull when you want to copy your work from the github cloud to the overleaf cloud).
 
 ### How
+The basic idea is, you work on code in some folder `a` and on your report in some folder `b`. By putting folder `a` and `b` in the same folder `c`, your code automatically outputs your results into your report. A lot of people find it convienent to type reports in overleaf because of its user friendly environment. But it is a bit tedious/time consuming to copy paste your pictures and code everytime you change something. So to make it all synchronized, you sync your project with github, and sync your github with overleaf. Then you only have to click 3 times to get all your code and pictures in your report when you want to sync. (Also it is convenient to have 2 backups of your work).
+
+### Instructions
 0. Create a github account.
 1. Download git from https://desktop.github.com/
 2. Fork this repository:
