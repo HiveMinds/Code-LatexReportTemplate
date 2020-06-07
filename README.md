@@ -7,12 +7,24 @@ You don't have to do unnecessary work copy pasting pictures and creating report-
 
 ### How
 0. Fork this repository:
-0.a ![1](./InstructionPictures/0.fork.png)
-0.b ![1](./InstructionPictures/1.fork.png)
+
+0.a 
+
+![1](./InstructionPictures/0.fork.png)
+
+0.b 
+
+![1](./InstructionPictures/1.fork.png)
 
 1. Clone=download your fork of this repository:
-1.a ![1](./InstructionPictures/2.clone.png)
-1.b ![1](./InstructionPictures/3.clone.png)
+
+1.a 
+
+![1](./InstructionPictures/2.clone.png)
+
+1.b 
+
+![1](./InstructionPictures/3.clone.png)
 
 4. if you want to work in overleaf: 
 4.a Get a(n) (free) overleaf account.
