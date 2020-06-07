@@ -26,61 +26,63 @@ You don't have to do unnecessary work copy pasting pictures and creating report-
 
 ![1](./InstructionPictures/3.clone.png)
 
-4. if you want to work in overleaf: 
-4.a Get a(n) (free) overleaf account.
-4.b In: https://www.overleaf.com/project click: "New project>import from github" and select your (copy/fork of this) repository.
-4.b.1.
+2. if you want to work in overleaf: 
+
+2.a Get a(n) (free) overleaf account.
+
+2.b In: https://www.overleaf.com/project click: "New project>import from github" and select your (copy/fork of this) repository.
+
 
 ![1](./InstructionPictures/a.png)
 
-4.b.2. 
+2.c
 
 ![1](./InstructionPictures/b.png)
 
-4.b.3. 
+2.d
 
 ![1](./InstructionPictures/c.png)
 
-Then, if you have adapted your code, and changed some pictures, or made a table, upload your change back again to your github folder.
+2.e Then, if you have adapted your code, and changed some pictures, or made a table, upload your change back again to your github folder.
 (It also automatically s the code in your report appendices, so no more copy pasting :))
 
-4.b.3.0.
+2.f
 
 ![1](./InstructionPictures/0.png)
 
-4.b.3.1.
+2.g
 
 ![1](./InstructionPictures/1.png)
 
-4.b.3.2.
+2.h
 
 ![1](./InstructionPictures/3.png)
 
-4.b.3.3. 
+2.i
 
 ![1](./InstructionPictures/4.png)
 
-4.b.3.4.
+2.j
 
 ![1](./InstructionPictures/5.png)
 
 
 
-4.b.3.5 Then you update your entire report, so tables, (vector) figures, and code with a single click in overleaf:
+3. Then you update your entire report, so tables, (vector) figures, and code with a single click in overleaf:
 
 ![1](./InstructionPictures/d.png)
 
 
-4.b.4. Now if you change something in your report, e.g. your code, pictures or text, you can do your first upload (called push) to github. 
+3.a Now if you change something in your report, e.g. your code, pictures or text, you can do your first upload (called push) to github. 
 
-5.a Note, first time you use github with command you probably need to login, but it'll ask you to do so if you need to.
-5.b push your code to github by opening cmd, browsing into the directory of the repository with `cd` and use commands:
+3.b Note, first time you use github with command you probably need to login, but it'll ask you to do so if you need to.
+3.c push your code to github by opening cmd, browsing into the directory of the repository with `cd` and use commands:
 ```
 git status
 ```
-5.c with that `git status` command you can see which files you changed, normally you add a particular file, but since it is a lot this time, you can also type `git add *` instead (instead of the git add commands below).
+4.c with that `git status` command you can see which files you changed, normally you add a particular file, but since it is a lot this time, you can also type `git add *` instead (instead of the git add commands below).
 
-5.d Then upload your changes to your own repository with:
+4.d Then upload your changes to your own repository with:
 ```
 git pull
 git add "some_folder/the_file_you_changed.py"
