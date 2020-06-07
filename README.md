@@ -16,7 +16,6 @@ The basic idea is, you work on code in some folder `a` and on your report in som
 
 ![1](./InstructionPictures/a.png)
 
-![1](./InstructionPictures/3.clone.png)
 
 4. if you want to work in overleaf (for convenience): 
 
@@ -65,6 +64,8 @@ The basic idea is, you work on code in some folder `a` and on your report in som
 ![1](./InstructionPictures/2.clone.png)
 
 3.b open command prompt, browse to the folder where you want it with: `cd c:`,`cd "c:/some folder/"` and type `git clone <the link you copied>`.
+
+![1](./InstructionPictures/3.clone.png)
 
 5. Then you update your entire report, so tables, (vector) figures, and code with a single click in overleaf:
 
