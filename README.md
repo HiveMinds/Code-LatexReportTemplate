@@ -17,38 +17,38 @@ The basic idea is, you work on code in some folder `a` and on your report in som
 ![1](./InstructionPictures/a.png)
 
 
-4. if you want to work in overleaf (for convenience): 
+3. if you want to work in overleaf (for convenience): 
 
-4.a Get a(n) (free) overleaf account at https://www.overleaf.com.
+3.a Get a(n) (free) overleaf account at https://www.overleaf.com.
 
-4.b In: https://www.overleaf.com/project click: "New project>import from github" and select your (copy/fork of this) repository.
+3.b In: https://www.overleaf.com/project click: "New project>import from github" and select your (copy/fork of this) repository.
 
 ![1](./InstructionPictures/b.png)
 
-4.c
+3.c
 
 ![1](./InstructionPictures/c.png)
 
-4.d Then, if you have adapted your code, and changed some pictures, or made a table, upload your change back again to your github folder.
-(It also automatically s the code in your report appendices, so no more copy pasting :))
 
-4.e
+4.a Download your project/report to your computer so that you can change the code or pictures.
 
 ![1](./InstructionPictures/0.png)
 
-4.f
+
+4.b Then, if you have adapted your code, and changed some pictures, or made a table, upload your change back again to your github folder.
+
 
 ![1](./InstructionPictures/1.png)
 
-4.g
+4.c
 
 ![1](./InstructionPictures/3.png)
 
-4.h
+4.d
 
 ![1](./InstructionPictures/4.png)
 
-4.i
+4.e
 
 ![1](./InstructionPictures/5.png)
 
