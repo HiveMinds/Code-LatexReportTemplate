@@ -9,6 +9,7 @@ import numpy as np
 from .Compile_latex import Compile_latex
 from .Plot_to_tex import Plot_to_tex as plt_tex
 from .Run_jupyter_notebooks import Run_jupyter_notebook
+from .Export_code_to_latex import export_code_to_latex
 
 # define global variables for genetic algorithm example
 string_length = 100
@@ -35,6 +36,9 @@ class Main:
         
         for notebook_name in notebook_names:
             self.run_jupyter_notebook.convert_notebook_to_pdf(f'{notebook_path}{notebook_name}')
+
+    def export_code_to_latex(self, project_nr):
+        export_code_to_latex(project_nr, 'main.tex')
     
     def compile_latex_report(self,project_nr):
         '''compiles latex code to pdf'''

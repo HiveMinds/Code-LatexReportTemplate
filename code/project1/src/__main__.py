@@ -6,12 +6,16 @@ project_nr = 1
 main = Main()
 
 notebook_names = ['AE4868_example_notebook_update20201025.ipynb']
+notebook_names = []# TODO: re-enable
 
 # run the jupyter notebooks for assignment 1 
 main.run_jupyter_notebooks(project_nr,notebook_names)
 
 # convert jupyter notebook for assignment 1 to pdf
 main.convert_notebooks_to_pdf(project_nr,notebook_names)
+
+# export the code to latex
+main.export_code_to_latex(project_nr)
 
 # compile the latex report
 main.compile_latex_report(project_nr)
