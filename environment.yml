@@ -6,14 +6,19 @@ channels:
   - tudat-team
   - conda
 dependencies:
-- tudatpy
 - anaconda
 - nb_conda
 - conda:
-  - pytest>=3.0
+  - pytest=6.1.2
   - nbconvert
+  - matplotlib
+  - ipykernel
+  - tudatpy
+  - nb_conda
 - pip
 - pip:
   # works for regular pip packages
   - pdflatex
   - testbook
+  - pyment
+  - pdoc3

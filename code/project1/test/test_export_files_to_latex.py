@@ -1,6 +1,7 @@
 import unittest
 import os
 from ..src.Main import Main
+from ..src.Export_code_to_latex import *
 import testbook
 
 class Test_main(unittest.TestCase):
@@ -24,13 +25,17 @@ class Test_main(unittest.TestCase):
         expected_result = 7
         result = self.main.addTwo(5)
         self.assertEqual(expected_result,result)
-
-    
-    def test_get_filenames_in_src(self):
-        expected_result = []
-        result = get_filenames_in_src('.py')
-        self.assertEqual(expected_result,result)
 	    
+        
+    def check_if_appendix_contains_file(self):
+        filepaths = ['/home/username/Documents/git/Code-LatexReportTemplate/code/project1/src/Main.py']
+        root_dir = '/home/username/Documents/git/Code-LatexReportTemplate/'
+        appendix_content = ["\section{Appendix Main.py}\label{app:2}","\pythonexternal{latex/project1/../../code/project1/src/Main.py}"]
+        project_nr = 1
+        result = check_if_appendix_contains_file(filepath, appendix_content, project_nr, root_dir)
+        expected_result = 1 #expect the command to be in line number 1.
+        self.assertEqual(result,expected_result)
+ 
  
 if __name__ == '__main__':
     unittest.main()
