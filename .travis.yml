@@ -17,8 +17,8 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-  - conda env create --file windows_environment.yml
-  - conda activate tudat-space
+  - conda env create --file environment.yml
+  - conda activate example_env
 
 # run tests
 script:

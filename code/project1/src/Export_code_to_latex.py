@@ -11,31 +11,39 @@ def export_code_to_latex(project_nr,latex_filename)
         relative_dir = f'latex/project{project_nr}/'
         parent_dir = get_parent_dir()
         
-        python_files = get_python_filenames()
-        notebooks = get_notebook_filenames()
+        python_files = get_filenames_in_src('py')
+        # notebooks = get_notebook_filenames()
         
-        python_files_already_included_in_appendices = get_python_files_already_included_in_appendices()
-        notebook_files_already_included_in_appendices = get_notebook_files_already_included_in_appendices()
+        # python_files_already_included_in_appendices = get_python_files_already_included_in_appendices()
+        # notebook_files_already_included_in_appendices = get_notebook_files_already_included_in_appendices()
        
         
-        missing_python_files_in_appendices = get_missing_python_files_in_appendices(python_files_already_included_in_appendices)
-        missing_notebook_files_in_appendices = get_missing_notebook_files_in_appendices(notebook_files_already_included_in_appendices)
+        # missing_python_files_in_appendices = get_missing_python_files_in_appendices(python_files_already_included_in_appendices)
+        # missing_notebook_files_in_appendices = get_missing_notebook_files_in_appendices(notebook_files_already_included_in_appendices)
          
-        create_appendices_with_python_codes()
-        create_appendices_with_notebook_pdfs()
+        # create_appendices_with_python_codes()
+        # create_appendices_with_notebook_pdfs()
         
-        appendix_tex_code = get_appendix_tex_code()
-        appendix_tex_code_with_python_code_appendices = include_python_files_in_appendix_tex_code(appendix_tex_code)
-        appendix_tex_code_with_notebook_code_appendices = include_notebook_files_in_appendix_tex_code(appendix_tex_code_with_python_code_appendices)
-        substitute_existing_appendix(appendix_tex_code_with_notebook_code_appendices)
+        # appendix_tex_code = get_appendix_tex_code()
+        # appendix_tex_code_with_python_code_appendices = include_python_files_in_appendix_tex_code(appendix_tex_code)
+        # appendix_tex_code_with_notebook_code_appendices = include_notebook_files_in_appendix_tex_code(appendix_tex_code_with_python_code_appendices)
+        # substitute_existing_appendix(appendix_tex_code_with_notebook_code_appendices)
         
-        move_pdf_into_latex_dir(relative_dir,latex_filename)
+        # move_pdf_into_latex_dir(relative_dir,latex_filename)
 
 
-def get_filenames_in_src(extension):
+def get_filenames_in_src(extension='.py', folder=get_script_dir()):
     '''Returns a list of the relative paths to all files within the code/projectX/src/ folder that match
     the given file extension.'''
-    pass
+    "Create a txt file with all the file of a type"
+    filepaths=[]
+    with open(extension[1:] + "file.txt", "w", encoding="utf-8") as filewrite:
+        for r, d, f in os.walk(folder):
+            for file in f:
+                if file.endswith(extension):
+                    #filewrite.write(f"{r + file}\n")
+                    filepaths.append(file)
+    return filepaths
     
 
     
@@ -114,3 +122,4 @@ def delete_file_if_exists(self,filename):
 def get_script_dir(self):
     ''' returns the directory of this script regardles of from which level the code is executed '''
     return os.path.dirname(__file__)
+	
