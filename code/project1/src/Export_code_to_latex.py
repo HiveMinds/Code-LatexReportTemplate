@@ -5,11 +5,17 @@ import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
 
 def export_code_to_latex(main_latex_filename, project_nr):
-    """
-
-    :param main_latex_filename: 
-    :param project_nr: 
-
+    """This function exports the python files and compiled pdfs of jupiter notebooks into the 
+    latex of the same project number. First it scans which appendices (without code, without 
+    notebooks) are already manually included in the main latex code. Next, all appendices
+    that contain the python code are eiter found or created in the following order:
+    First, the __main__.py file is included, followed by the main.py file, followed by all
+    python code files in alphabetic order. After this, all the pdfs of the compiled notebooks
+    are added in alphabetic order of filename. This order of appendices is overwritten in the
+    main tex file.
+    
+    :param main_latex_filename: Name of the main latex document of this project number
+    :param project_nr: The number  indicating which project this code pertains to.
     """
     script_dir = get_script_dir()
     relative_dir = f'latex/project{project_nr}/'
@@ -40,7 +46,7 @@ def export_code_to_latex(main_latex_filename, project_nr):
     sorted_python_appendix_filenames = list(map(lambda x: x.appendix_filename, sorted_created_python_appendices))
     
     notebook_appendix_filenames = list(map(lambda x: x.appendix_filename, filter_appendices_by_type(appendices, 'notebook')))
-    sorted_created_notebook_appendices = sort_notebook_appendices(filter_appendices_by_type(appendices, 'notebook'))
+    sorted_created_notebook_appendices = sort_notebook_appendices_alphabetically(filter_appendices_by_type(appendices, 'notebook'))
     sorted_notebook_appendix_filenames = list(map(lambda x: x.appendix_filename, sorted_created_notebook_appendices))
     
     appendix_latex_code = create_appendices_latex_code(main_non_code_appendix_inclusion_lines,  sorted_created_notebook_appendices, project_nr, sorted_created_python_appendices)
@@ -51,13 +57,12 @@ def export_code_to_latex(main_latex_filename, project_nr):
     
     
 def create_appendices_latex_code(main_non_code_appendix_inclusion_lines, notebook_appendices, project_nr, python_appendices):
-    """creates the appendix text for main.
+    """Creates the latex code that includeds the appendices in the main latex file.
 
-    :param main_non_code_appendix_inclusion_lines: 
-    :param notebook_appendices: 
-    :param project_nr: 
-    :param python_appendices: 
-
+    :param main_non_code_appendix_inclusion_lines: latex code that includes the appendices that do not contain python code nor notebooks
+    :param notebook_appendices: List of Appendix objects representing appendices that include the pdf files of compiled Jupiter notebooks
+    :param project_nr: The number indicating which project this code pertains to. 
+    :param python_appendices: List of Appendix objects representing appendices that include the python code files.
     """
     main_appendix_inclusion_lines = main_non_code_appendix_inclusion_lines
     for appendix in python_appendices:
@@ -71,11 +76,10 @@ def create_appendices_latex_code(main_non_code_appendix_inclusion_lines, noteboo
         
         
 def filter_appendices_by_type(appendices, appendix_type):
-    """Returns the list of appendices of certain type from a list of appendix objects.
+    """Returns the list of all appendices of a certain appendix type, from the incoming list of Appendix objects.
 
-    :param appendices: 
-    :param appendix_type: 
-
+    :param appendices: List of Appendix objects
+    :param appendix_type: Can consist of "no_code", "python", or "notebook" and indicates different appendix types
     """
     return_appendices = []
     for appendix in appendices:
@@ -87,8 +91,7 @@ def filter_appendices_by_type(appendices, appendix_type):
 def sort_python_appendices(appendices):
     """First puts __main__.py, followed by main.py followed by a-z code files.
 
-    :param appendices: 
-
+    :param appendices: List of Appendix objects
     """
     return_appendices = []
     for appendix in appendices: # first get appendix containing __main__.py
@@ -103,27 +106,26 @@ def sort_python_appendices(appendices):
     
     # Filter remaining appendices in order of a-z
     filtered_remaining_appendices = [i for i in appendices if i.code_filename is not None]
-    appendices_sorted_a_z = filter_list_on_property(filtered_remaining_appendices)
+    appendices_sorted_a_z = sort_appendices_on_code_filename(filtered_remaining_appendices)
     return return_appendices+appendices_sorted_a_z
     
 
-def sort_notebook_appendices(appendices):
-    """Sorts notebooks on a-z pdf filenames.
+def sort_notebook_appendices_alphabetically(appendices):
+    """Sorts notebook appendix objects alphabetic order of their pdf filenames.
 
-    :param appendices: 
-
-    """
+    :param appendices: List of Appendix objects
+    '"""
     return_appendices = []
     filtered_remaining_appendices = [i for i in appendices if i.code_filename is not None]
-    appendices_sorted_a_z = filter_list_on_property(filtered_remaining_appendices)
+    appendices_sorted_a_z = sort_appendices_on_code_filename(filtered_remaining_appendices)
     return return_appendices+appendices_sorted_a_z
     
     
-def filter_list_on_property(appendices):
-    """Returns a list based on the property: code_filename
+def sort_appendices_on_code_filename(appendices):
+    """Returns a list of Appendix objects that are sorted and  based on the property: code_filename.
+    Assumes the incoming appendices only contain python files.
 
-    :param appendices: 
-
+    :param appendices: List of Appendix objects 
     """
     attributes = list(map(lambda x: x.code_filename, appendices))
     sorted_indices = sorted(range(len(attributes)), key=lambda k: attributes[k])
@@ -134,12 +136,12 @@ def filter_list_on_property(appendices):
             
             
 def get_order_of_non_code_appendices_in_main(appendices, appendix_tex_code):
-    """Scans the lines of appendices in the main code, and returns the lines that
-    of appendices that do not contain code, in specified order.
+    """Scans the lines of appendices in the main code, and returns the lines
+    of the appendices that do not contain code, in the order in which they were 
+    included in the main latex file.
 
-    :param appendices: 
-    :param appendix_tex_code: 
-
+    :param appendices: List of Appendix objects 
+    :param appendix_tex_code: latex code from the main latex file that includes the appendices
     """
     non_code_appendices = []
     non_code_appendix_lines = []
@@ -158,23 +160,24 @@ def get_order_of_non_code_appendices_in_main(appendices, appendix_tex_code):
 
 
 def get_filename_from_latex_appendix_line(appendices, appendix_line):
-    """
+    """Returns the first filename from a list of incoming filenames that 
+    occurs in a latex code line.
 
-    :param appendices: 
-    :param appendix_line: 
-
+    :param appendices: List of Appendix objects 
+    :param appendix_line: latex code (in particular expected to be the code from main that is used to include appendix latex files.)
     """
     for filename in list(map(lambda appendix: appendix.appendix_filename, appendices)):
         if filename in appendix_line:
-            return filename
+            if not line_is_commented(appendix_line, filename):
+                return filename
             
             
 def get_appendix_from_filename(appendices, appendix_filename):
-    """
+    """Returns the first Appendix object with an appendix filename that matches the incoming appendix_filename.
+    The Appendix objects are selected from an incoming list of Appendix objects.
 
-    :param appendices: 
-    :param appendix_filename: 
-
+    :param appendices: List of Appendix objects 
+    :param appendix_filename: name of a latex appendix file, ends in .tex,
     """
     for appendix in appendices:
         if appendix_filename == appendix.appendix_filename:
@@ -182,10 +185,10 @@ def get_appendix_from_filename(appendices, appendix_filename):
             
             
 def get_compiled_notebook_paths(script_dir):
-    """Returns the list of jupiter notebook filepaths that were compiled successfully
+    """Returns the list of jupiter notebook filepaths that were compiled successfully and that are
+    included in the same dias this script (the src directory).
 
-    :param script_dir: 
-
+    :param script_dir: absolute path of this file.
     """
     notebook_filepaths= get_filenames_in_dir('.ipynb', script_dir)
     compiled_notebook_filepaths = []
@@ -203,12 +206,11 @@ def get_compiled_notebook_paths(script_dir):
     
     
 def get_list_of_appendix_files(appendix_dir, absolute_notebook_filepaths, absolute_python_filepaths):
-    """Returns a list with all the appendix files with .tex extension.
+    """Returns a list of Appendix objects that contain all the appendix files with .tex extension.
 
-    :param appendix_dir: 
-    :param absolute_notebook_filepaths: 
-    :param absolute_python_filepaths: 
-
+    :param appendix_dir: Absolute path that contains the appendix .tex files.
+    :param absolute_notebook_filepaths: List of absolute paths to the compiled notebook pdf files.
+    :param absolute_python_filepaths: List of absolute paths to the python files.
     """
     appendices = []
     appendices_paths = get_filenames_in_dir('.tex', appendix_dir)
@@ -235,13 +237,12 @@ def get_list_of_appendix_files(appendix_dir, absolute_notebook_filepaths, absolu
     
     
 def get_filename_from_latex_inclusion_command(appendix_line, extension, start_substring):
-    """returns the filename in a latex inclusion command that is located in an appendix.
+    """returns the code/notebook filename in a latex command which includes that code in an appendix.
     The inclusion command includes a python code or jupiter notebook pdf.
 
-    :param appendix_line: 
-    :param extension: 
-    :param start_substring: 
-
+    :param appendix_line: :Line of latex code (in particular expected to be the latex code from an appendix.).
+    :param extension: The file extension of the file that is sought in the appendix line. Either ".py" or ".pdf".
+    :param start_substring: The substring that characterises the latex inclusion command.
     """
     start_index = appendix_line.index(start_substring)
     end_index = appendix_line.index(extension)
@@ -249,13 +250,12 @@ def get_filename_from_latex_inclusion_command(appendix_line, extension, start_su
 
     
 def get_filenames_in_dir(extension, path, excluded_files=None):
-    """Returns a list of the relative paths to all files within the code/projectX/src/ folder that match
+    """Returns a list of the relative paths to all files within the some path that match
     the given file extension.
 
-    :param extension: 
-    :param path: 
-    :param excluded_files:  (Default value = None)
-
+    :param extension: The file extension of the file that is sought in the appendix line. Either ".py" or ".pdf".
+    :param path: Absolute filepath in which files are being sought.
+    :param excluded_files: (Default value = None) Files that will not be included even if they are found.
     """
     filepaths=[]
     for r, d, f in os.walk(path):
@@ -266,19 +266,18 @@ def get_filenames_in_dir(extension, path, excluded_files=None):
     return filepaths
     
     
-def get_code_files_already_included_in_appendices(absolute_filepaths, appendix_dir, extension, project_nr, root_dir):
-    """Returns a list of filepaths that are already properly included in some appendix of this projectX,
+def get_code_files_already_included_in_appendices(absolute_code_filepaths, appendix_dir, extension, project_nr, root_dir):
+    """Returns a list of code filepaths that are already properly included the latex appendix files of this project.
 
-    :param absolute_filepaths: 
-    :param appendix_dir: 
-    :param extension: 
-    :param project_nr: 
-    :param root_dir: 
-
+    :param absolute_code_filepaths: List of absolute paths to the code files (either python files or compiled jupyter notebook pdfs).
+    :param appendix_dir: Absolute path that contains the appendix .tex files.
+    :param extension: The file extension of the file that is sought in the appendix line. Either ".py" or ".pdf". 
+    :param project_nr: The number  indicating which project this code pertains to. 
+    :param root_dir: The root directory of this repository.
     """
     appendix_files = get_filenames_in_dir('.tex', appendix_dir)
     contained_codes = []
-    for code_filepath in absolute_filepaths:
+    for code_filepath in absolute_code_filepaths:
         for appendix_filepath in appendix_files:
             appendix_filecontent = read_file(appendix_filepath)
             line_nr = check_if_appendix_contains_file(appendix_filecontent, code_filepath, extension, project_nr, root_dir)
@@ -293,15 +292,14 @@ def get_code_files_already_included_in_appendices(absolute_filepaths, appendix_d
     
     
 def check_if_appendix_contains_file(appendix_content, code_filepath, extension, project_nr, root_dir):
-    """scans an appendix content to determine whether it contains a substring that
-    includes the python code file.
+    """Scans an appendix content to determine whether it contains a substring that
+    includes a code file (of either python or compiled notebook=pdf extension).
 
-    :param appendix_content: 
-    :param code_filepath: 
-    :param extension: 
-    :param project_nr: 
-    :param root_dir: 
-
+    :param appendix_content: content in an appendix latex file.
+    :param code_filepath: Absolute path to a code file (either python files or compiled jupyter notebook pdfs).
+    :param extension: The file extension of the file that is sought in the appendix line. Either ".py" or ".pdf". 
+    :param project_nr: The number  indicating which project this code pertains to. 
+    :param root_dir: The root directory of this repository. 
     """
     # convert code_filepath to the inclusion format in latex format
     latex_relative_filepath = f'latex/project{project_nr}/../../{code_filepath[len(root_dir):]}'
@@ -312,9 +310,8 @@ def check_if_appendix_contains_file(appendix_content, code_filepath, extension, 
 def get_line_of_latex_command(appendix_content, latex_command):
     """Returns the line number of a latex command if it is found. Returns -1 otherwise.
 
-    :param appendix_content: 
-    :param latex_command: 
-
+    :param appendix_content: content in an appendix latex file.
+    :param latex_command: A line of latex code. (Expected to come from some appendix)
     """
     # check if the file is in the latex code
     line_nr = 0
@@ -329,11 +326,10 @@ def get_line_of_latex_command(appendix_content, latex_command):
     
     
 def line_is_commented(line, target_substring):
-    """Returns true if a line is commented, returns false otherwise
+    """Returns True if a latex code line is commented, returns False otherwise
 
-    :param line: 
-    :param target_substring: 
-
+    :param line: A line of latex code that contains a relevant command (target substring).
+    :param target_substring: Used to determine whether the command that is found is commented or not.
     """
     left_of_command = line[:line.rfind(target_substring)]
     if '%' in left_of_command:
@@ -342,10 +338,12 @@ def line_is_commented(line, target_substring):
                 
     
 def get_latex_inclusion_command(extension, latex_relative_filepath_to_codefile):
-    """
+    """Creates and returns a latex command that includes either a python file or a compiled jupiter 
+    notebook pdf (whereever the command is placed). The command is intended to be placed in the appendix.
 
-    :param extension: 
-    :param latex_relative_filepath_to_codefile: 
+    :param extension: The file extension of the file that is sought in the appendix line. Either ".py" or ".pdf". 
+    :param latex_relative_filepath_to_codefile: The latex compilation requires a relative path towards code files
+    that are included. Therefore, a relative path towards the code is given.
 
     """
     if extension==".py":
@@ -376,7 +374,7 @@ def get_code_files_not_yet_included_in_appendices(code_filepaths, contained_code
 
     :param code_filepaths: 
     :param contained_codes: 
-    :param extension: 
+    :param extension: The file extension of the file that is sought in the appendix line. Either ".py" or ".pdf". 
 
     """
     contained_filepaths = list(map(lambda contained_file: contained_file.code_filepath, contained_codes))    
@@ -392,9 +390,9 @@ def create_appendices_with_code(appendix_dir, code_filepaths, extension, project
 
     :param appendix_dir: 
     :param code_filepaths: 
-    :param extension: 
-    :param project_nr: 
-    :param root_dir: 
+    :param extension: The file extension of the file that is sought in the appendix line. Either ".py" or ".pdf". 
+    :param project_nr: The number  indicating which project this code pertains to. 
+    :param root_dir: The root directory of this repository. 
 
     """
     appendix_filenames = []
@@ -449,7 +447,7 @@ def overwrite_content_to_file(content, filepath, content_has_newlines=True):
 def get_appendix_tex_code(main_latex_filename):
     """gets the latex appendix code from the main tex file.
 
-    :param main_latex_filename: 
+    :param main_latex_filename: Name of the main latex document of this project number 
 
     """
     main_tex_code = read_file(main_latex_filename)
@@ -477,7 +475,7 @@ def update_appendix_tex_code(appendix_filename, project_nr):
     """Includes the appendices as latex commands in the tex code string
 
     :param appendix_filename: 
-    :param project_nr: 
+    :param project_nr: The number  indicating which project this code pertains to. 
 
     """
     left = "\input{latex/project"
