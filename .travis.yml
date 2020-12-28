@@ -4,6 +4,10 @@ language: python
 os: linux
 dist: bionic
 
+branches:
+  only:
+  - main
+  
 install:
   - sudo apt-get update
   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
@@ -22,11 +26,7 @@ install:
 
 # run tests
 script:
-    "python -m pytest -v test/*"
+    "python -m pytest"
 
 notifications:
   email: false
-
-  
-
-
