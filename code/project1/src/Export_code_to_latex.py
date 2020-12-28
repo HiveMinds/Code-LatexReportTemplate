@@ -344,7 +344,6 @@ def get_latex_inclusion_command(extension, latex_relative_filepath_to_codefile):
     :param extension: The file extension of the file that is sought in the appendix line. Either ".py" or ".pdf". 
     :param latex_relative_filepath_to_codefile: The latex compilation requires a relative path towards code files
     that are included. Therefore, a relative path towards the code is given.
-
     """
     if extension==".py":
         left = "\pythonexternal{"
@@ -359,10 +358,9 @@ def get_latex_inclusion_command(extension, latex_relative_filepath_to_codefile):
     
     
 def read_file(filepath):
-    """Reads content of a file and returns it as a list of strings
+    """Reads content of a file and returns it as a list of strings, with one string per line.
 
-    :param filepath: 
-
+    :param filepath: path towards the file that is being read. 
     """
     with open(filepath) as f:
         content = f.readlines()
@@ -370,12 +368,14 @@ def read_file(filepath):
 
 
 def get_code_files_not_yet_included_in_appendices(code_filepaths, contained_codes, extension):
-    """Returns a list of filepaths that are not yet properly included in some appendix of this projectX,
+    """Returns a list of filepaths that are not yet properly included in some appendix of this project.
 
-    :param code_filepaths: 
-    :param contained_codes: 
+    :param code_filepath: Absolute path to all the code files in  this project (source directory).
+    (either python files or compiled jupyter notebook pdfs).
+    :param contained_codes: list of  Appendix objects that include either python files or compiled jupyter notebook pdfs, which  
+    are already included in the appendix tex files. (Does not care whether those appendices are also actually 
+    included in the main or not.)    
     :param extension: The file extension of the file that is sought in the appendix line. Either ".py" or ".pdf". 
-
     """
     contained_filepaths = list(map(lambda contained_file: contained_file.code_filepath, contained_codes))    
     not_contained = []
@@ -388,12 +388,12 @@ def get_code_files_not_yet_included_in_appendices(code_filepaths, contained_code
 def create_appendices_with_code(appendix_dir, code_filepaths, extension, project_nr, root_dir):
     """Creates the latex appendix files in with relevant codes included.
 
-    :param appendix_dir: 
-    :param code_filepaths: 
+    :param appendix_dir: Absolute path that contains the appendix .tex files.
+    :param code_filepaths: Absolute path to code files that are not yet included in an appendix 
+    (either python files or compiled jupyter notebook pdfs).
     :param extension: The file extension of the file that is sought in the appendix line. Either ".py" or ".pdf". 
     :param project_nr: The number  indicating which project this code pertains to. 
     :param root_dir: The root directory of this repository. 
-
     """
     appendix_filenames = []
     appendix_reference_index = 0
@@ -412,12 +412,13 @@ def create_appendices_with_code(appendix_dir, code_filepaths, extension, project
     
     
 def create_section(appendix_reference_index, code_filename, content):
-    """
+    """Creates the header of a latex appendix file, such that it contains a section that
+    indicates the section is an appendix, and indicates which pyhon or notebook file is 
+    being included in that appendix.
 
-    :param appendix_reference_index: 
-    :param code_filename: 
-    :param content: 
-
+    :param appendix_reference_index: A counter that is used in the label to ensure the appendix section labels are unique.
+    :param code_filename: file name of the code file that is included
+    :param content: A list of strings that make up the appendix, with one line per element.
     """
     # write section
     left ="\section{Appendix "
@@ -429,12 +430,12 @@ def create_section(appendix_reference_index, code_filename, content):
     
     
 def overwrite_content_to_file(content, filepath, content_has_newlines=True):
-    """Writes the content of an appendix to a new appendix
+    """Writes a list of lines of tex code from the content argument to a .tex file 
+    using overwriting method. The content has one line per element.
 
-    :param content: 
-    :param filepath: 
+    :param content: The content that is being written to file.
+    :param filepath: Path towards the file that is being read.
     :param content_has_newlines:  (Default value = True)
-
     """
     with open(filepath,'w') as f:
         for line in content:
@@ -448,7 +449,6 @@ def get_appendix_tex_code(main_latex_filename):
     """gets the latex appendix code from the main tex file.
 
     :param main_latex_filename: Name of the main latex document of this project number 
-
     """
     main_tex_code = read_file(main_latex_filename)
     start =  "\\begin{appendices}"
@@ -459,11 +459,11 @@ def get_appendix_tex_code(main_latex_filename):
 
 
 def get_index_of_substring_in_list(lines, target_substring):
-    """
+    """ Returns the index of the line in which the first character of a latex substring if it is found 
+    uncommented in the incoming list.
 
-    :param lines: 
-    :param target_substring: 
-
+    :param lines: List of lines of latex code.
+    :param target_substring: Some latex command/code that is sought in the incoming text.
     """
     for i in range(0, len(lines)):
         if target_substring in lines[i]:
@@ -472,11 +472,11 @@ def get_index_of_substring_in_list(lines, target_substring):
         
 
 def update_appendix_tex_code(appendix_filename, project_nr):
-    """Includes the appendices as latex commands in the tex code string
-
-    :param appendix_filename: 
-    :param project_nr: The number  indicating which project this code pertains to. 
-
+    """Returns the latex command that includes an appendix .tex file in an appendix environment
+    as can be used in the main tex file.
+    
+    :param appendix_filename: Name of the appendix that is included by the generated command.
+    :param project_nr: The number indicating which project this code pertains to.
     """
     left = "\input{latex/project"
     middle = "/Appendices/"
@@ -485,24 +485,23 @@ def update_appendix_tex_code(appendix_filename, project_nr):
         
         
 def substitute_appendix_code(end_index, main_tex_code, start_index, updated_appendices_tex_code):
-    """Replaces the old latex code that include the appendices with the new latex
+    """Replaces the old latex code that included the appendices in the main.tex file with the new latex
     commands that include the appendices in the latex report.
 
-    :param end_index: 
-    :param main_tex_code: 
-    :param start_index: 
-    :param updated_appendices_tex_code: 
-
+    :param end_index: Index at which the appendix section ends right before the latex \end{appendix} line,
+    :param main_tex_code: The code that is saved in the main .tex file.
+    :param start_index: Index at which the appendix section starts right after the latex \begin{appendix} line,
+    :param updated_appendices_tex_code: The newly created code that includes all the relevant appendices.
+    (relevant being (in order): manually created appendices, python codes, pdfs of compiled jupiter notebooks).
     """
     updated_main_tex_code = main_tex_code[0:start_index]+updated_appendices_tex_code+main_tex_code[end_index:]
     return updated_main_tex_code
     
 
 def get_filename_from_dir(path):
-    """
+    """Returns a filename from an absolute path to a file.
 
-    :param path: 
-
+    :param path: path to a file of which the name is queried.
     """
     return path[path.rfind("/")+1:]
 
@@ -515,8 +514,6 @@ def get_script_dir():
 class Appendix_with_code:
     """stores in which appendix file and accompanying line number in the appendix in which a code file is
     already included. Does not take into account whether this appendix is in the main tex file or not
-
-
     """
     def __init__(self, code_filepath, appendix_filepath, appendix_content, file_line_nr, extension):
         self.code_filepath = code_filepath
