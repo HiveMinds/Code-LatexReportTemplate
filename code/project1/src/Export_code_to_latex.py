@@ -17,58 +17,49 @@ def export_code_to_latex(project_nr,latex_filename):
         compiled_notebook_pdf_filepaths = get_compiled_notebook_paths(script_dir)
         
         python_files_already_included_in_appendices = get_code_files_already_included_in_appendices('.py', python_filepaths, appendix_dir, project_nr, root_dir)
-        #print(f'\n\npython_files_already_included_in_appendices={list(map(lambda x: x.filepath, python_files_already_included_in_appendices))}')
         notebook_pdf_files_already_included_in_appendices = get_code_files_already_included_in_appendices('.ipynb', compiled_notebook_pdf_filepaths, appendix_dir, project_nr, root_dir)
-        #appendices = get_filenames_in_dir('.tex', appendix_dir)
         
         missing_python_files_in_appendices = get_code_files_not_yet_included_in_appendices('.py', python_files_already_included_in_appendices, python_filepaths)
         missing_notebook_files_in_appendices = get_code_files_not_yet_included_in_appendices('.pdf', notebook_pdf_files_already_included_in_appendices, compiled_notebook_pdf_filepaths)
         
         created_python_appendix_filenames = create_appendices_with_code('.py', missing_python_files_in_appendices, appendix_dir, project_nr, root_dir)
         created_notebook_appendix_filenames = create_appendices_with_code('.ipynb', missing_notebook_files_in_appendices, appendix_dir, project_nr, root_dir)
-        # create_appendices_with_notebook_pdfs()
+        
         appendices = get_list_of_appendix_files(appendix_dir, python_filepaths, compiled_notebook_pdf_filepaths, project_nr, root_dir)
-        #print(f'appendices={appendices}')
-       
+        
         main_tex_code, start_index, end_index, appendix_tex_code = get_appendix_tex_code(path_to_main_latex_file)
         non_code_appendices, non_code_appendix_lines = get_order_of_non_code_appendices_in_main(appendix_tex_code,appendices) # assumes non-included non-code appendices should not be included.
-       # create intended order of appendices
         
-        # TODO: include appendices even if they are not newly created but still missing in main
-        python_appendix_filenames = list(map(lambda x: x.appendix_filename, get_appendices_of_type(appendices, 'python')))
-        sorted_created_python_appendices = sort_python_appendices(get_appendices_of_type(appendices, 'python'))
+        python_appendix_filenames = list(map(lambda x: x.appendix_filename, filter_appendices_by_type(appendices, 'python')))
+        sorted_created_python_appendices = sort_python_appendices(filter_appendices_by_type(appendices, 'python'))
         sorted_python_appendix_filenames = list(map(lambda x: x.appendix_filename, sorted_created_python_appendices))
-        print(f'sorted_python_appendix_filenames ={sorted_python_appendix_filenames }')
         
-        notebook_appendix_filenames = list(map(lambda x: x.appendix_filename, get_appendices_of_type(appendices, 'notebook')))
-        sorted_created_notebook_appendices = sort_notebook_appendices(get_appendices_of_type(appendices, 'notebook'))
+        notebook_appendix_filenames = list(map(lambda x: x.appendix_filename, filter_appendices_by_type(appendices, 'notebook')))
+        sorted_created_notebook_appendices = sort_notebook_appendices(filter_appendices_by_type(appendices, 'notebook'))
         sorted_notebook_appendix_filenames = list(map(lambda x: x.appendix_filename, sorted_created_notebook_appendices))
-        print(f'sorted_notebook_appendix_filenames ={sorted_notebook_appendix_filenames}')
-        
         
         appendix_latex_code = create_appendices_latex_code(non_code_appendix_lines, sorted_created_python_appendices, sorted_created_notebook_appendices, project_nr)
-        
-        #updated_appendices_tex_code = update_appendix_tex_code(appendix_tex_code,created_python_appendix_filenames, project_nr)
-        #updated_appendices_tex_code = update_appendix_tex_code(updated_appendices_tex_code,created_notebook_appendix_filenames, project_nr)
         
         updated_main_tex_code = substitute_appendix_code(main_tex_code, start_index, end_index, appendix_latex_code)
         
         overwrite_content_to_file(path_to_main_latex_file, updated_main_tex_code)
         
-def create_appendices_latex_code(non_code_lines, python_appendices, notebook_appendices, project_nr):
+        
+def create_appendices_latex_code(main_non_code_appendix_inclusion_lines, python_appendices, notebook_appendices, project_nr):
     ''' creates the appendix text for main.'''
-    appendix_latex_code = non_code_lines
+    main_appendix_inclusion_lines = main_non_code_appendix_inclusion_lines
     for appendix in python_appendices:
         line = update_appendix_tex_code(appendix.appendix_filename, project_nr)
-        appendix_latex_code.append(line)
+        main_appendix_inclusion_lines.append(line)
     
     for appendix in notebook_appendices:
         line = update_appendix_tex_code(appendix.appendix_filename, project_nr)
-        appendix_latex_code.append(line)
-    print(f'appendix_latex_code={appendix_latex_code}')
-    return appendix_latex_code
+        main_appendix_inclusion_lines.append(line)
+    print(f'main_appendix_inclusion_lines={main_appendix_inclusion_lines}')
+    return main_appendix_inclusion_lines
         
-def get_appendices_of_type(appendices, appendix_type):
+        
+def filter_appendices_by_type(appendices, appendix_type):
     ''' Returns the list of appendices of certain type from a list of appendix objects.'''
     return_appendices = []
     for appendix in appendices:
@@ -76,24 +67,23 @@ def get_appendices_of_type(appendices, appendix_type):
             return_appendices.append(appendix)
     return return_appendices
     
+    
 def sort_python_appendices(appendices):
     ''' First puts __main__.py, followed by main.py followed by a-z code files.'''
     return_appendices = []
-    for appendix in appendices:
-        print(f'appendix.appendix_filename={appendix.filename_of_code_file}')
+    for appendix in appendices: # first get appendix containing __main__.py
         if (appendix.filename_of_code_file=="__main__.py") or (appendix.filename_of_code_file=="__Main__.py"):
             return_appendices.append(appendix)
             appendices.remove(appendix)
-    for appendix in appendices:
+    for appendix in appendices: # second get appendix containing main.py
         if (appendix.filename_of_code_file=="main.py") or (appendix.filename_of_code_file=="Main.py"):
             return_appendices.append(appendix)
             appendices.remove(appendix)
     return_appendices
     
+    # Filter remaining appendices in order of a-z
     filtered_remaining_appendices = [i for i in appendices if i.filename_of_code_file is not None]
-    print(f'filtered_remaining_appendices={list(map(lambda x: x.filename_of_code_file, filtered_remaining_appendices))}')
     appendices_sorted_a_z = filter_list_on_property(filtered_remaining_appendices)
-    print(f'sorted_a_z={list(map(lambda x: x.filename_of_code_file, appendices_sorted_a_z))}')
     return return_appendices+appendices_sorted_a_z
     
 
@@ -101,22 +91,19 @@ def sort_notebook_appendices(appendices):
     ''' Sorts notebooks on a-z pdf filenames.'''
     return_appendices = []
     filtered_remaining_appendices = [i for i in appendices if i.filename_of_code_file is not None]
-    print(f'filtered_remaining_appendices={list(map(lambda x: x.filename_of_code_file, filtered_remaining_appendices))}')
     appendices_sorted_a_z = filter_list_on_property(filtered_remaining_appendices)
-    print(f'sorted_a_z={list(map(lambda x: x.filename_of_code_file, appendices_sorted_a_z))}')
     return return_appendices+appendices_sorted_a_z
     
     
-def filter_list_on_property(some_list):
+def filter_list_on_property(appendices):
     ''' Returns a list based on the property: filename_of_code_file'''
-    # TODO: pass property to generalize method
-    # customObjects.sort(key=lambda x: x.date, reverse=True) gives error of Nonetype on this list
-    attributes = list(map(lambda x: x.filename_of_code_file, some_list))
+    attributes = list(map(lambda x: x.filename_of_code_file, appendices))
     sorted_indices = sorted(range(len(attributes)), key=lambda k: attributes[k])
     sorted_list = []
     for i in sorted_indices:
-        sorted_list.append(some_list[i])
+        sorted_list.append(appendices[i])
     return sorted_list
+            
             
 def get_order_of_non_code_appendices_in_main(appendix_tex_code, appendices):
     ''' Scans the lines of appendices in the main code, and returns the lines that
@@ -126,7 +113,6 @@ def get_order_of_non_code_appendices_in_main(appendix_tex_code, appendices):
     appendix_tex_code = list(dict.fromkeys(appendix_tex_code))
     for line in appendix_tex_code:
         appendix_filename = get_filename_from_latex_appendix_line(line, appendices)
-        print(f'appendix_filename={appendix_filename}')
         
         # Check if line is not commented
         if not appendix_filename is None:
