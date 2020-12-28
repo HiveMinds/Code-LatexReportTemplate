@@ -6,11 +6,11 @@ import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
 
 
-def export_code_to_latex(project_nr,latex_filename):
+def export_code_to_latex(project_nr, main_latex_filename):
         script_dir = get_script_dir()
         relative_dir = f'latex/project{project_nr}/'
         appendix_dir = script_dir+'/../../../'+relative_dir+'Appendices/'
-        path_to_main_latex_file = f'{script_dir}/../../../{relative_dir}/{latex_filename}'
+        path_to_main_latex_file = f'{script_dir}/../../../{relative_dir}/{main_latex_filename}'
         root_dir = script_dir[0:script_dir.rfind(f'code/project{project_nr}')]
         
         python_filepaths = get_filenames_in_dir('py',script_dir, ['__init__.py'])
@@ -316,29 +316,28 @@ def overwrite_content_to_file(filepath, content, content_has_newlines=True):
                 f.write(line+'\n')
 
 
-def get_appendix_tex_code(main_filename):
+def get_appendix_tex_code(main_latex_filename):
     ''' gets the latex appendix code from the main tex file.'''
-    main_tex_code = read_file(main_filename)
-    start =  '\\begin{appendices}' # TODO: scan for % in front
-    end = "\end{appendices}" # TODO: scan for % in front
-    start_index = get_index_of_substring_in_list(start,main_tex_code)+1
-    end_index = get_index_of_substring_in_list(end,main_tex_code)
-    return main_tex_code,start_index,end_index,main_tex_code[start_index:end_index]
+    main_tex_code = read_file(main_latex_filename)
+    start =  "\\begin{appendices}"
+    end = "\end{appendices}"
+    start_index = get_index_of_substring_in_list(start, main_tex_code)+1
+    end_index = get_index_of_substring_in_list(end, main_tex_code)
+    return main_tex_code, start_index, end_index, main_tex_code[start_index:end_index]
 
-def get_index_of_substring_in_list(substring, lines):
+
+def get_index_of_substring_in_list(target_substring, lines):
     for i in range(0, len(lines)):
-        if substring in lines[i]:
-            return i
+        if target_substring in lines[i]:
+            if not line_is_commented(lines[i], target_substring):
+                return i
         
 
 def update_appendix_tex_code(appendix_filename, project_nr):
     ''' Includes the appendices as latex commands in the tex code string'''
-    #return_lines = appendix_tex_code    
-    #f'{appendix_dir}Auto_generated_{extension[1:]}App{appendix_reference_index}.tex',content, False)
     left = "\input{latex/project"
     middle = "/Appendices/"
     right = "} \\newpage\n"
-    #return_lines.append(f'{left}{project_nr}{middle}{appendix_filename}{right}')
     return f'{left}{project_nr}{middle}{appendix_filename}{right}'
         
         
@@ -346,38 +345,12 @@ def substitute_appendix_code(main_tex_code, start_index, end_index, updated_appe
     ''' Replaces the old latex code that include the appendices with the new latex 
     commands that include the appendices in the latex report.'''
     updated_main_tex_code = main_tex_code[0:start_index]+updated_appendices_tex_code+main_tex_code[end_index:]
-    print(f'updated_main_tex_code={updated_main_tex_code}')
     return updated_main_tex_code
     
-    
-    
-def compile_latex(relative_dir,latex_filename):
-    os.system(f'pdflatex {relative_dir}{latex_filename}')
-    
-def clean_up_after_compilation(latex_filename):
-    latex_filename_without_extention = latex_filename[:-4]
-    delete_file_if_exists(f'{latex_filename_without_extention}.aux')
-    delete_file_if_exists(f'{latex_filename_without_extention}.log')
-    delete_file_if_exists(f'texput.log')
-
-def move_pdf_into_latex_dir(relative_dir,latex_filename):
-    pdf_filename = f'{latex_filename[:-4]}.pdf'
-    destination= f'{get_script_dir()}/../../../{relative_dir}{pdf_filename}'
-    
-    try:
-        shutil.move(pdf_filename, destination)
-    except:
-        print("Error while moving file ", pdf_filename)
-
-
-def delete_file_if_exists(filename):
-    try:
-        os.remove(filename)
-    except:
-        print(f'Error while deleting file: {filename} but that is not too bad because the intention is for it to not be there.')
 
 def get_filename_from_dir(path):
     return path[path.rfind("/")+1:]
+
 
 def get_script_dir():
     ''' returns the directory of this script regardles of from which level the code is executed '''
@@ -404,9 +377,3 @@ class Appendix:
         self.appendix_type = appendix_type # TODO: perform validation of input values
         self.filename_of_code_file=filename_of_code_file
         self.appendix_inclusion_line = appendix_inclusion_line
-        
-class Appendix_without_code:
-    ''' stores in which appendix file that does not contain code.'''
-    def __init__(self, appendix_path,appendix_content):
-        self.appendix_path = appendix_path
-        self.appendix_content = appendix_content
