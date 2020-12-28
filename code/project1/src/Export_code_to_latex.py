@@ -72,17 +72,17 @@ def sort_python_appendices(appendices):
     ''' First puts __main__.py, followed by main.py followed by a-z code files.'''
     return_appendices = []
     for appendix in appendices: # first get appendix containing __main__.py
-        if (appendix.filename_of_code_file=="__main__.py") or (appendix.filename_of_code_file=="__Main__.py"):
+        if (appendix.code_filename=="__main__.py") or (appendix.code_filename=="__Main__.py"):
             return_appendices.append(appendix)
             appendices.remove(appendix)
     for appendix in appendices: # second get appendix containing main.py
-        if (appendix.filename_of_code_file=="main.py") or (appendix.filename_of_code_file=="Main.py"):
+        if (appendix.code_filename=="main.py") or (appendix.code_filename=="Main.py"):
             return_appendices.append(appendix)
             appendices.remove(appendix)
     return_appendices
     
     # Filter remaining appendices in order of a-z
-    filtered_remaining_appendices = [i for i in appendices if i.filename_of_code_file is not None]
+    filtered_remaining_appendices = [i for i in appendices if i.code_filename is not None]
     appendices_sorted_a_z = filter_list_on_property(filtered_remaining_appendices)
     return return_appendices+appendices_sorted_a_z
     
@@ -90,14 +90,14 @@ def sort_python_appendices(appendices):
 def sort_notebook_appendices(appendices):
     ''' Sorts notebooks on a-z pdf filenames.'''
     return_appendices = []
-    filtered_remaining_appendices = [i for i in appendices if i.filename_of_code_file is not None]
+    filtered_remaining_appendices = [i for i in appendices if i.code_filename is not None]
     appendices_sorted_a_z = filter_list_on_property(filtered_remaining_appendices)
     return return_appendices+appendices_sorted_a_z
     
     
 def filter_list_on_property(appendices):
-    ''' Returns a list based on the property: filename_of_code_file'''
-    attributes = list(map(lambda x: x.filename_of_code_file, appendices))
+    ''' Returns a list based on the property: code_filename'''
+    attributes = list(map(lambda x: x.code_filename, appendices))
     sorted_indices = sorted(range(len(attributes)), key=lambda k: attributes[k])
     sorted_list = []
     for i in sorted_indices:
@@ -270,7 +270,7 @@ def read_file(filepath):
 
 def get_code_files_not_yet_included_in_appendices(extension, contained_codes, code_filepaths):
     ''' Returns a list of filepaths that are not yet properly included in some appendix of this projectX,'''
-    contained_filepaths = list(map(lambda contained_file: contained_file.filepath, contained_codes))    
+    contained_filepaths = list(map(lambda contained_file: contained_file.code_filepath, contained_codes))    
     not_contained = []
     for filepath in code_filepaths:
         if not filepath in contained_filepaths:
@@ -360,20 +360,20 @@ def get_script_dir():
 class Appendix_with_code:
     ''' stores in which appendix file and accompanying line number in the appendix in which a code file is 
     already included. Does not take into account whether this appendix is in the main tex file or not'''
-    def __init__(self, filepath,appendix_path,appendix_content,file_line_nr, extension):
-        self.filepath = filepath
-        self.appendix_path = appendix_path
+    def __init__(self, code_filepath, appendix_filepath, appendix_content, file_line_nr, extension):
+        self.code_filepath = code_filepath
+        self.appendix_filepath = appendix_filepath
         self.appendix_content = appendix_content
         self.file_line_nr = file_line_nr
         self.extension = extension
         
+        
 class Appendix:
     ''' stores in appendix files and type of appendix.'''
-    # TODO: refactor remove the appendix_ cause that's what the object already implies
-    def __init__(self, appendix_path,appendix_content, appendix_type, filename_of_code_file=None, appendix_inclusion_line=None):
-        self.appendix_path = appendix_path
-        self.appendix_filename = get_filename_from_dir(self.appendix_path)
+    def __init__(self, appendix_filepath, appendix_content, appendix_type, code_filename=None, appendix_inclusion_line=None):
+        self.appendix_filepath = appendix_filepath
+        self.appendix_filename = get_filename_from_dir(self.appendix_filepath)
         self.appendix_content = appendix_content
         self.appendix_type = appendix_type # TODO: perform validation of input values
-        self.filename_of_code_file=filename_of_code_file
+        self.code_filename = code_filename
         self.appendix_inclusion_line = appendix_inclusion_line
