@@ -1,12 +1,10 @@
 # runs a jupyter notebook and converts it to pdf
-
 import os
 import shutil
 import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
 
-
-def export_code_to_latex(project_nr, main_latex_filename):
+def export_code_to_latex(main_latex_filename, project_nr):
         script_dir = get_script_dir()
         relative_dir = f'latex/project{project_nr}/'
         appendix_dir = script_dir+'/../../../'+relative_dir+'Appendices/'
@@ -25,10 +23,11 @@ def export_code_to_latex(project_nr, main_latex_filename):
         created_python_appendix_filenames = create_appendices_with_code('.py', missing_python_files_in_appendices, appendix_dir, project_nr, root_dir)
         created_notebook_appendix_filenames = create_appendices_with_code('.ipynb', missing_notebook_files_in_appendices, appendix_dir, project_nr, root_dir)
         
-        appendices = get_list_of_appendix_files(appendix_dir, python_filepaths, compiled_notebook_pdf_filepaths)
+        appendices = get_list_of_appendix_files(appendix_dir, compiled_notebook_pdf_filepaths, python_filepaths)
         
         main_tex_code, start_index, end_index, appendix_tex_code = get_appendix_tex_code(path_to_main_latex_file)
-        non_code_appendices, non_code_appendix_lines = get_order_of_non_code_appendices_in_main(appendix_tex_code,appendices) # assumes non-included non-code appendices should not be included.
+        # assumes non-included non-code appendices should not be included:
+        non_code_appendices, main_non_code_appendix_inclusion_lines = get_order_of_non_code_appendices_in_main(appendices, appendix_tex_code) 
         
         python_appendix_filenames = list(map(lambda x: x.appendix_filename, filter_appendices_by_type(appendices, 'python')))
         sorted_created_python_appendices = sort_python_appendices(filter_appendices_by_type(appendices, 'python'))
@@ -38,14 +37,14 @@ def export_code_to_latex(project_nr, main_latex_filename):
         sorted_created_notebook_appendices = sort_notebook_appendices(filter_appendices_by_type(appendices, 'notebook'))
         sorted_notebook_appendix_filenames = list(map(lambda x: x.appendix_filename, sorted_created_notebook_appendices))
         
-        appendix_latex_code = create_appendices_latex_code(non_code_appendix_lines, sorted_created_python_appendices, sorted_created_notebook_appendices, project_nr)
+        appendix_latex_code = create_appendices_latex_code(main_non_code_appendix_inclusion_lines,  sorted_created_notebook_appendices, project_nr, sorted_created_python_appendices)
         
         updated_main_tex_code = substitute_appendix_code(main_tex_code, start_index, end_index, appendix_latex_code)
         
         overwrite_content_to_file(path_to_main_latex_file, updated_main_tex_code)
         
         
-def create_appendices_latex_code(main_non_code_appendix_inclusion_lines, python_appendices, notebook_appendices, project_nr):
+def create_appendices_latex_code(main_non_code_appendix_inclusion_lines, notebook_appendices, project_nr, python_appendices):
     ''' creates the appendix text for main.'''
     main_appendix_inclusion_lines = main_non_code_appendix_inclusion_lines
     for appendix in python_appendices:
@@ -55,7 +54,6 @@ def create_appendices_latex_code(main_non_code_appendix_inclusion_lines, python_
     for appendix in notebook_appendices:
         line = update_appendix_tex_code(appendix.appendix_filename, project_nr)
         main_appendix_inclusion_lines.append(line)
-    print(f'main_appendix_inclusion_lines={main_appendix_inclusion_lines}')
     return main_appendix_inclusion_lines
         
         
@@ -105,32 +103,32 @@ def filter_list_on_property(appendices):
     return sorted_list
             
             
-def get_order_of_non_code_appendices_in_main(appendix_tex_code, appendices):
+def get_order_of_non_code_appendices_in_main(appendices, appendix_tex_code):
     ''' Scans the lines of appendices in the main code, and returns the lines that
     of appendices that do not contain code, in specified order.'''
     non_code_appendices = []
     non_code_appendix_lines = []
     appendix_tex_code = list(dict.fromkeys(appendix_tex_code))
     for line in appendix_tex_code:
-        appendix_filename = get_filename_from_latex_appendix_line(line, appendices)
+        appendix_filename = get_filename_from_latex_appendix_line(appendices, line)
         
         # Check if line is not commented
         if not appendix_filename is None:
             if not line_is_commented(line,appendix_filename):
-                appendix = get_appendix_from_filename(appendix_filename, appendices)
+                appendix = get_appendix_from_filename(appendices, appendix_filename)
                 if appendix.appendix_type == "no_code":
                     non_code_appendices.append(appendix)
                     non_code_appendix_lines.append(line)
     return non_code_appendices, non_code_appendix_lines
 
 
-def get_filename_from_latex_appendix_line(appendix_line, appendices):
+def get_filename_from_latex_appendix_line(appendices, appendix_line):
     for filename in list(map(lambda appendix: appendix.appendix_filename, appendices)):
         if filename in appendix_line:
             return filename
             
             
-def get_appendix_from_filename(appendix_filename, appendices):
+def get_appendix_from_filename(appendices, appendix_filename):
     for appendix in appendices:
         if appendix_filename == appendix.appendix_filename:
             return appendix
@@ -153,7 +151,7 @@ def get_compiled_notebook_paths(script_dir):
     return compiled_notebook_filepaths
     
     
-def get_list_of_appendix_files(appendix_dir, absolute_python_filepaths, absolute_notebook_filepaths):
+def get_list_of_appendix_files(appendix_dir, absolute_notebook_filepaths, absolute_python_filepaths):
     ''' Returns a list with all the appendix files with .tex extension.'''
     appendices = []
     appendices_paths = get_filenames_in_dir('.tex', appendix_dir)

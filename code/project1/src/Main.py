@@ -38,7 +38,7 @@ class Main:
             self.run_jupyter_notebook.convert_notebook_to_pdf(f'{notebook_path}{notebook_name}')
 
     def export_code_to_latex(self, project_nr):
-        export_code_to_latex(project_nr, 'main.tex')
+        export_code_to_latex('main.tex', project_nr)
     
     def compile_latex_report(self,project_nr):
         '''compiles latex code to pdf'''
