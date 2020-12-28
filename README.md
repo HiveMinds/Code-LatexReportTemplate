@@ -1,6 +1,6 @@
-# Student course template Numerical Astrodynamics[![Build Status](https://travis-ci.org/a-t-0/NumericalAstrodynamicsAssignments_2020.svg?branch=master)](https://travis-ci.org/a-t-0/NumericalAstrodynamicsAssignments_2020)
+# Student latex course template [![Build Status][![Build Status](https://travis-ci.com/a-t-0/Code-LatexReportTemplate.svg?branch=master)](https://travis-ci.com/a-t-0/Code-LatexReportTemplate)
 
-Hi, w.r.t. the original repository this repository is supplemented with:
+Hi, this is a template you can use for every course. In particular if you do some python coding (normal or Jupiter notebooks), this repository enables you to automatically updates your report every time you run your code. It also syncs with Overleaf so you can do your typing there. That means no last minute copy pasting of images into Overleaf (if you were into that sort of thing). Also it automatically sets up your programming envirionment for you, and if you collaborate with others, you can automatically see whether their code contributions keep the code working, thanks to the Continuous Integration with Travis-CI. To summarise:
 
 0. Python code and latex report integration. The following is done with a single command: 
   - Plots are exported directly into your latex report.
@@ -9,13 +9,8 @@ Hi, w.r.t. the original repository this repository is supplemented with:
   - The example jupyter notebook is automatically converted to pdf
   - The pdf of the example jupyter notebook is automatically integrated in the latex report.
   - The latex report is automatically compiled into a pdf.
-1. You can easily sync with overleaf, e.g. if you do a last minute run, you just push and pull into overleaf, instead of manually uploading pictures.
+1. You can easily sync with Overleaf, e.g. if you do a last minute run, you just push and pull into overleaf, instead of manually uploading pictures.
 2. Unit tests are written. (entire repository code can be tested with a single line)
-
-**Room for improvement**
-
-3. The  `.travis.yml` file is currently not allowing for the Continuous integration (CI) testing with Travis-CI. I do not yet know how to include the `.._environment.yml` into `.travis.yml`. That is why the build status badge on top currently is gray instead of green and says "failed/canceled".
-4. A unit test could be written to test a function inside a jupyter notebook.
 
 ## Usage: do once
 
@@ -25,28 +20,15 @@ cd /home/<your path to the repository folder>/
 ```
 
 1. To use this package, first make a new conda environment and activate (it this automatically installs everything you need)
-1.1 For Windows (is currently the same as for linux):
 ```
-conda env create --file windows_environment.yml
-```
-1.2 For Linux:
-```
-conda env create --file linux_environment.yml
-```
-2. Instal jupyter-lab with command:
-```
-jupyter-lab
+conda env create --file environment.yml
 ```
 
 ## Usage: do every time you start Anaconda:
 
 3. Activate the conda environment you created:
 ```
-conda activate tudat-space
-```
-4. Open jupyter lab
-```
-jupyter-lab
+conda activate example_env
 ```
 
 ## Usage: do every run:
