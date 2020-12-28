@@ -14,11 +14,11 @@ def export_code_to_latex(main_latex_filename, project_nr):
         python_filepaths = get_filenames_in_dir('py',script_dir, ['__init__.py'])
         compiled_notebook_pdf_filepaths = get_compiled_notebook_paths(script_dir)
         
-        python_files_already_included_in_appendices = get_code_files_already_included_in_appendices('.py', python_filepaths, appendix_dir, project_nr, root_dir)
-        notebook_pdf_files_already_included_in_appendices = get_code_files_already_included_in_appendices('.ipynb', compiled_notebook_pdf_filepaths, appendix_dir, project_nr, root_dir)
+        python_files_already_included_in_appendices = get_code_files_already_included_in_appendices(python_filepaths, appendix_dir, '.py', project_nr, root_dir)
+        notebook_pdf_files_already_included_in_appendices = get_code_files_already_included_in_appendices(compiled_notebook_pdf_filepaths, appendix_dir, '.ipynb', project_nr, root_dir)
         
-        missing_python_files_in_appendices = get_code_files_not_yet_included_in_appendices('.py', python_files_already_included_in_appendices, python_filepaths)
-        missing_notebook_files_in_appendices = get_code_files_not_yet_included_in_appendices('.pdf', notebook_pdf_files_already_included_in_appendices, compiled_notebook_pdf_filepaths)
+        missing_python_files_in_appendices = get_code_files_not_yet_included_in_appendices(python_filepaths, python_files_already_included_in_appendices, '.py')
+        missing_notebook_files_in_appendices = get_code_files_not_yet_included_in_appendices(compiled_notebook_pdf_filepaths, notebook_pdf_files_already_included_in_appendices, '.pdf')
         
         created_python_appendix_filenames = create_appendices_with_code('.py', missing_python_files_in_appendices, appendix_dir, project_nr, root_dir)
         created_notebook_appendix_filenames = create_appendices_with_code('.ipynb', missing_notebook_files_in_appendices, appendix_dir, project_nr, root_dir)
@@ -165,19 +165,19 @@ def get_list_of_appendix_files(appendix_dir, absolute_notebook_filepaths, absolu
             appendix_type = "python"
             # get python filename
             line = appendix_filecontent[line_nr_python_file_inclusion]
-            filename = get_filename_from_latex_inclusion_command('.py', line, "\pythonexternal{")
+            filename = get_filename_from_latex_inclusion_command(line, '.py', "\pythonexternal{")
             appendices.append(Appendix(appendix_filepath, appendix_filecontent, appendix_type, filename, line))
         if line_nr_notebook_file_inclusion > -1:
             appendix_type = "notebook"
             line = appendix_filecontent[line_nr_notebook_file_inclusion]
-            filename = get_filename_from_latex_inclusion_command('.pdf', line, "\includepdf[pages=")
+            filename = get_filename_from_latex_inclusion_command( line, '.pdf', "\includepdf[pages=")
             appendices.append(Appendix(appendix_filepath, appendix_filecontent, appendix_type, filename, line))
         else:
             appendices.append(Appendix(appendix_filepath, appendix_filecontent, appendix_type))
     return appendices
     
     
-def get_filename_from_latex_inclusion_command(extension, appendix_line, start_substring):
+def get_filename_from_latex_inclusion_command(appendix_line, extension, start_substring):
     ''' returns the filename in a latex inclusion command that is located in an appendix.
     The inclusion command includes a python code or jupiter notebook pdf.'''
     start_index = appendix_line.index(start_substring)
@@ -197,14 +197,14 @@ def get_filenames_in_dir(extension, path, excluded_files=None):
     return filepaths
     
     
-def get_code_files_already_included_in_appendices(extension, absolute_filepaths, appendix_dir, project_nr, root_dir):
+def get_code_files_already_included_in_appendices(absolute_filepaths, appendix_dir, extension, project_nr, root_dir):
     ''' Returns a list of filepaths that are already properly included in some appendix of this projectX,'''
     appendix_files = get_filenames_in_dir('.tex', appendix_dir)
     contained_codes = []
     for code_filepath in absolute_filepaths:
         for appendix_filepath in appendix_files:
             appendix_filecontent = read_file(appendix_filepath)
-            line_nr = check_if_appendix_contains_file(extension, code_filepath, appendix_filecontent, project_nr, root_dir)
+            line_nr = check_if_appendix_contains_file(code_filepath, appendix_filecontent, extension, project_nr, root_dir)
             if line_nr>-1:
                 # add filepath to list of files that are already in the appendices
                 contained_codes.append(Appendix_with_code(code_filepath,
@@ -215,7 +215,7 @@ def get_code_files_already_included_in_appendices(extension, absolute_filepaths,
     return contained_codes
     
     
-def check_if_appendix_contains_file(extension, code_filepath, appendix_content, project_nr, root_dir):
+def check_if_appendix_contains_file(code_filepath, appendix_content, extension, project_nr, root_dir):
     ''' scans an appendix content to determine whether it contains a substring that 
     includes the python code file.'''
     # convert code_filepath to the inclusion format in latex format
@@ -266,7 +266,7 @@ def read_file(filepath):
     return content  
 
 
-def get_code_files_not_yet_included_in_appendices(extension, contained_codes, code_filepaths):
+def get_code_files_not_yet_included_in_appendices(code_filepaths, contained_codes, extension):
     ''' Returns a list of filepaths that are not yet properly included in some appendix of this projectX,'''
     contained_filepaths = list(map(lambda contained_file: contained_file.code_filepath, contained_codes))    
     not_contained = []
