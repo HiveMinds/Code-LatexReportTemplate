@@ -1,4 +1,4 @@
-# Student latex course template [![Build Status](https://travis-ci.com/a-t-0/Code-LatexReportTemplate.svg?branch=master)](https://travis-ci.com/a-t-0/Code-LatexReportTemplate)
+# Student latex course template [![Build Status](https://travis-ci.com/a-t-0/Code-LatexReportTemplate.svg?branch=main)](https://travis-ci.com/a-t-0/Code-LatexReportTemplate)
 
 Hi, this is a template you can use for every course. In particular if you do some python coding (normal or Jupiter notebooks), this repository enables you to automatically updates your report every time you run your code. It also syncs with Overleaf so you can do your typing there. That means no last minute copy pasting of images into Overleaf (if you were into that sort of thing). Also it automatically sets up your programming envirionment for you, and if you collaborate with others, you can automatically see whether their code contributions keep the code working, thanks to the Continuous Integration with Travis-CI. To summarise:
 
