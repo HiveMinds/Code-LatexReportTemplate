@@ -22,3 +22,4 @@ dependencies:
   - testbook
   - pyment
   - pdoc3
+  - black
