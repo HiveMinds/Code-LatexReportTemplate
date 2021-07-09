@@ -144,9 +144,13 @@ showstringspaces=false            %
 %\input{Chapters/Introduction.tex} %\newpage
 %\input{Chapters/chap1.tex} %\newpage
 %\input{Chapters/Conclusion.tex} %\newpage
+\IfFileExists{latex/project1/main.tex}{
 \input{latex/project1/Chapters/Introduction.tex} %\newpage
 \input{latex/project1/Chapters/chap1.tex} %\newpage
-
+}{
+\input{Chapters/Introduction.tex} %\newpage
+\input{Chapters/chap1.tex} %\newpage
+}
 
 
 
@@ -166,14 +170,22 @@ showstringspaces=false            %
 \addcontentsline{toc}{chapter}{Bibliography}
 
 \begin{appendices}
-\input{latex/project1/Appendices/AppA.tex} \newpage
+\IfFileExists{latex/project1/main.tex}{\input{latex/project1/Appendices/AppA.tex} \newpage
 \input{latex/project1/Appendices/AppB.tex} \newpage
 \input{latex/project1/Appendices/Auto_generated_py_App3.tex} \newpage
 \input{latex/project1/Appendices/Auto_generated_py_App0.tex} \newpage
-\input{latex/project1/Appendices/Auto_generated_py_App1.tex} \newpage
 \input{latex/project1/Appendices/Auto_generated_py_App2.tex} \newpage
+\input{latex/project1/Appendices/Auto_generated_py_App1.tex} \newpage
 \input{latex/project1/Appendices/AppF.tex} \newpage
 \input{latex/project1/Appendices/Auto_generated_ipynb_App0.tex} \newpage
-\end{appendices}
+}{\input{Appendices/AppA.tex} \newpage
+\input{Appendices/AppB.tex} \newpage
+\input{Appendices/Auto_generated_py_App3.tex} \newpage
+\input{Appendices/Auto_generated_py_App0.tex} \newpage
+\input{Appendices/Auto_generated_py_App2.tex} \newpage
+\input{Appendices/Auto_generated_py_App1.tex} \newpage
+\input{Appendices/AppF.tex} \newpage
+\input{Appendices/Auto_generated_ipynb_App0.tex} \newpage
+}\end{appendices}
 
 \end{document}
